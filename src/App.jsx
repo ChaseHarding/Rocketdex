@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { SearchBar } from "./components/SearchBar";
 import { DisplayCard } from "./components/DisplayCard";
+import { Loading } from "./components/Loading";
 
 function App() {
+  //SEARCHBAR
   const [searchResult, setSearchResult] = useState("");
 
   const handleSearch = (query) => {
@@ -33,18 +35,38 @@ function App() {
       });
   };
 
+  //LOADING SCREEN
+  const [loading, setLoading] = useState(false);
+
+  //Will trigger loading on first render of the page.
+  useEffect(() => {
+    setLoading(true)
+    // IF USING API, could use fetch here and when getting a response from the server would remove the loading.
+    // For testing/demonstration purposes, manually setting a load time using setTimeout.
+    setTimeout(() => {
+      setLoading(false)
+    }, 8000)
+  }, [])
+
   return (
     <div className="App">
-      <div className="pokedex">
-        <div className="red-container left">
-        <div className="search-bar-container">
-          <SearchBar onEnter={handleSearch} />
-          {searchResult && <h1>{searchResult}</h1>}
+      {loading ? 
+      
+        <Loading loading={loading}/> 
+        
+        :
+
+        <div className="pokedex">
+          <div className="red-container left">
+          <div className="search-bar-container">
+            <SearchBar onEnter={handleSearch} />
+            {searchResult && <h1>{searchResult}</h1>}
+          </div>
+          <DisplayCard/>
+          </div>
+          <div className="red-container right">Test</div>
         </div>
-        <DisplayCard/>
-        </div>
-        <div className="red-container right">Test</div>
-      </div>
+      }
     </div>
   );
 }
